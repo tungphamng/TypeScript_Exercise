@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",           
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "typeScript-exercise/person.ts",
+    "typeScript-exercise/person-repository.ts",
+    "typeScript-exercise/main.ts",
+    "data/people.json"
+  ]
+}

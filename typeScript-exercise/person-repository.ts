@@ -1,5 +1,11 @@
-import Person from "./Person.ts";
+import Person from "./person.js";
 import * as fs from 'fs';
+
+interface PersonData{
+    name: string;
+    age: number;
+    city: string;
+}
 
 class PersonRepository {
     
@@ -10,9 +16,12 @@ class PersonRepository {
     }
     public async loadPersons(): Promise<Person[]> {
         try {
+            if(this.sourceFile.trim().length === 0) {
+                throw new Error("Source file path cannot be empty");
+            }
             const data = await fs.promises.readFile(this.sourceFile, 'utf-8');
             const jsonData = JSON.parse(data);
-            return jsonData.map((item: any) => Person.fromJSON(item));
+            return jsonData.map((item: PersonData[]) => Person.fromJSON(item));
          } 
         catch (error) {
             console.error("Error loading persons:", error);
