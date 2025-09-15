@@ -60,7 +60,6 @@ export class CheckoutPage {
         await this.citySelect.fill(billingInfo.city);
         await this.stateInput.click();
         await this.page.getByRole('option', { name: billingInfo.state , exact: true }).click();
-
         await this.zipInput.fill(billingInfo.zip);
         await this.emailInput.fill(billingInfo.email);
         await this.phoneInput.fill(billingInfo.phone);  
@@ -90,3 +89,4 @@ export class BillingInfo  {
         this.phone = '555-1234';
     }
 };
+

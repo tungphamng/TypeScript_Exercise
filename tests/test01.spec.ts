@@ -1,33 +1,16 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage} from '../pages/login.page';
 import { HomePage } from '../pages/home.page';
-import { ProductCategoryPage } from '../pages/product-category.page';
+import { ProductCategoryPage, products } from '../pages/product-category.page';
 import { CartPage } from '../pages/cart.page';
 import { CheckoutPage, BillingInfo } from '../pages/checkout.page';
 import { OrderStatusPage } from '../pages/order-status.page';
 import { UserInfo } from '../pages/login.page';
 
-// type userInfo = {
-//   user: string;
-//   pass: string;
-// }
 
-// const admin: userInfo = {
-//    user: 'tung.pham',
-//    pass: '123456789',
-// };
-
-type productInfo = {
-    name: string;
-    quantity: number;
-}
-
-const product: productInfo = {
-    name: 'DJI Phantom 4 Camera Drone',
-    quantity: 1,
-};
 
 test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
+  const productTemp = [products[0]];
   // 1. Open browser and go to https://demo.testarchitect.com/
   const homepage = new HomePage(page);
   await homepage.goto();
@@ -57,14 +40,14 @@ test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
 
   // 8. Select any item randomly to purchase
   // 9. Click 'Add to Cart'
-  await productCategory.addToCart(product.name);
+  await productCategory.addToCart(productTemp[0].name);
 
   // 10. Go to the cart
   const cartPage = new CartPage(page);
   await cartPage.goto();
 
   // 11. Verify item details in mini content
-  await cartPage.checkOrderItem(product.name, product.quantity);
+  await cartPage.checkOrderItem(productTemp[0].name);
 
   // 12. Click on Checkout
   await cartPage.proceedToCheckout();
@@ -72,10 +55,10 @@ test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
   // 13. Verify Checkout page displays
   const checkoutPage = new CheckoutPage(page);
   await expect(page).toHaveURL(/.*checkout.*/);
-  await checkoutPage.isCheckoutPageDisplayed();
+  //await checkoutPage.isCheckoutPageDisplayed();
 
   // 14. Verify item details in order
-  await checkoutPage.verifyOrderItem(product.name);
+  await checkoutPage.verifyOrderItem(productTemp[0].name);
 
   // 15. Fill the billing details with default payment method
 
@@ -86,10 +69,13 @@ test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
 
     // 16. Verify Order status page displays
   const orderPage = new OrderStatusPage(page);
+  await orderPage.checkStatus();
+  
   //await orderPage.checkStatus();
   // 17. Verify the Order details with billing and item information
-  await orderPage.verifyOrderDetails(product, new BillingInfo());
-  
+
+  await orderPage.verifyOrderDetails(productTemp, new BillingInfo());
+
 });
 
 

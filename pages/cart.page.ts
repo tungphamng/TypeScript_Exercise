@@ -20,7 +20,7 @@ export class CartPage {
         await this.page.goto('/cart');
     }
 
-    async checkOrderItem(itemName: string, quantity: number) {
+    async checkOrderItem(itemName: string) {
         const itemRow = await this.productTable.getByRole('row', { name: new RegExp(itemName, 'i') });
         await expect(itemRow).toBeVisible();
     }
