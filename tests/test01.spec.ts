@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage} from '../pages/login.page';
 import { HomePage } from '../pages/home.page';
-import { ProductCategoryPage, products } from '../pages/product-category.page';
-import { CartPage } from '../pages/cart.page';
-import { CheckoutPage, BillingInfo } from '../pages/checkout.page';
+import { ProductCategoryPage } from '../pages/product-category.page';
+import { CheckoutPage } from '../pages/checkout.page';
 import { OrderStatusPage } from '../pages/order-status.page';
 import { UserInfo } from '../pages/login.page';
-
+import { billingInfo } from '../fixtures/billing.fixture.ts';
+import { products } from '../fixtures/product.fixture.ts';
 
 
 test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
@@ -16,16 +16,12 @@ test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
   await homepage.goto();
 
   // 2. Login with valid credentials 
-  const loginPage = new LoginPage(page);
-  await loginPage.goto();
-  await loginPage.login(UserInfo.user, UserInfo.pass);
-  //await loginPage.isLoginSuccessful();
+  await new LoginPage(page).login(UserInfo.user, UserInfo.pass);
   
   // 3. Navigate to All departments section
-  await homepage.allDepartmentsLink.click();
-  
   // 4. Select Electronic Components & Supplies
-  await homepage.electronicComponentsLink.click();
+  await homepage.gotoComponentsCategory('Electronic Components & Supplies');
+
   const productCategory = new ProductCategoryPage(page);
 
   // 5. Verify the items should be displayed as a grid
@@ -40,17 +36,14 @@ test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
 
   // 8. Select any item randomly to purchase
   // 9. Click 'Add to Cart'
-  await productCategory.addToCart(productTemp[0].name);
+  await productCategory.addToCart(productTemp);
 
   // 10. Go to the cart
-  const cartPage = new CartPage(page);
-  await cartPage.goto();
-
   // 11. Verify item details in mini content
-  await cartPage.checkOrderItem(productTemp[0].name);
+  await homepage.verifyProductInCart(productTemp);
 
   // 12. Click on Checkout
-  await cartPage.proceedToCheckout();
+  await homepage.clickCheckoutFromCart();
 
   // 13. Verify Checkout page displays
   const checkoutPage = new CheckoutPage(page);
@@ -58,11 +51,10 @@ test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
   //await checkoutPage.isCheckoutPageDisplayed();
 
   // 14. Verify item details in order
-  await checkoutPage.verifyOrderItem(productTemp[0].name);
+  await checkoutPage.checkOrderItem(productTemp);
 
   // 15. Fill the billing details with default payment method
-
-  await checkoutPage.fillBillingInformation(new BillingInfo());
+  await checkoutPage.fillBillingInformation(billingInfo);
 
   // 16. Click on PLACE ORDER
   await checkoutPage.placeOrderButton.click();
@@ -74,7 +66,7 @@ test('TC01 - Verify users can buy an item successfully', async ({ page }) => {
   //await orderPage.checkStatus();
   // 17. Verify the Order details with billing and item information
 
-  await orderPage.verifyOrderDetails(productTemp, new BillingInfo());
+  await orderPage.verifyOrderDetails(productTemp, billingInfo, "Direct bank transfer");
 
 });
 

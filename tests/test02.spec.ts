@@ -1,12 +1,13 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { LoginPage} from '../pages/login.page';
 import { HomePage } from '../pages/home.page';
-import { ProductCategoryPage, products } from '../pages/product-category.page';
+import { ProductCategoryPage } from '../pages/product-category.page';
 import { CartPage } from '../pages/cart.page';
-import { CheckoutPage, BillingInfo } from '../pages/checkout.page';
+import { CheckoutPage } from '../pages/checkout.page';
 import { OrderStatusPage } from '../pages/order-status.page';
 import { UserInfo } from '../pages/login.page';
-
+import { billingInfo } from '../fixtures/billing.fixture.ts';
+import { products } from '../fixtures/product.fixture.ts';
 
 
 test('TC_02 Verify users can buy multiple item successfully', async ({ page }) => {
@@ -15,43 +16,31 @@ test('TC_02 Verify users can buy multiple item successfully', async ({ page }) =
   await homepage.goto();
 
   // 2. Login with valid credentials 
-  const loginPage = new LoginPage(page);
-  await loginPage.goto();
-  await loginPage.login(UserInfo.user, UserInfo.pass);
-  //await loginPage.isLoginSuccessful();
-  
+  await new LoginPage(page).login(UserInfo.user, UserInfo.pass);
+
   // 3. Go to Shop page
   await homepage.gotoMenu('Shop');
 
-  const productCategory = new ProductCategoryPage(page);
-
   // 4. Select multiple items and add to cart
-  for (const product of products) {
-    await productCategory.addToCart(product.name);
-  }
+  await new ProductCategoryPage(page).addToCart(products);
+  await homepage.gotoCartPage();
 
   // 5. Go to the cart and verify all selected items
   const cartPage = new CartPage(page);
-  await cartPage.goto();
-
-  for (const product of products) {
-    await cartPage.checkOrderItem(product.name);
-  }
-
+  await cartPage.checkOrderItem(products);
+ 
   // 6. Proceed to checkout and confirm order
   await cartPage.proceedToCheckout();
 
   const checkoutPage = new CheckoutPage(page);
-  for (const product of products) {
-    await checkoutPage.verifyOrderItem(product.name);
-  }
+ 
+  await checkoutPage.checkOrderItem(products);
   
-  await checkoutPage.fillBillingInformation(new BillingInfo());
+  await checkoutPage.fillBillingInformation(billingInfo);
   await checkoutPage.placeOrderButton.click();
   
   // 7. Verify order confirmation message
-  const orderPage = new OrderStatusPage(page);
-  await orderPage.verifyOrderDetails(products, new BillingInfo());
+  await new OrderStatusPage(page).verifyOrderDetails(products, billingInfo, "Direct bank transfer");
 
 });
 

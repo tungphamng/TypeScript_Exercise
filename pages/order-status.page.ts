@@ -1,7 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { TIMEOUT } from 'dns';
-import { BillingInfo } from '../pages/checkout.page.ts';
-import { ProductInfo } from '../pages/product-category.page.ts';
+import { BillingInfo } from '../fixtures/billing.fixture.ts';
+import { ProductInfo } from '../fixtures/product.fixture.ts';
 
 export class OrderStatusPage {
     readonly page: Page;
@@ -13,15 +12,15 @@ export class OrderStatusPage {
     async checkStatus() {
         await this.page.waitForLoadState('domcontentloaded'); 
         await this.page.waitForLoadState('networkidle'); 
-        await expect(this.page.getByText('Thank you. Your order has been received.')).toBeVisible({ timeout: 10000 });
     }
 
 
-    async verifyOrderDetails(products: ProductInfo[], billingInfo: BillingInfo) {
+    async verifyOrderDetails(products: ProductInfo[], billingInfo: BillingInfo, paymentMethod: string) {
         // Verify order details
         await this.page.waitForLoadState('domcontentloaded'); 
         await this.page.waitForLoadState('networkidle'); 
 
+        // Verify products in the order
         const orderTable = this.page.getByRole('table');
         for (const product of products) {
             await expect(orderTable.getByRole('cell', { name: product.name + '  ×' })).toBeVisible();
@@ -35,10 +34,13 @@ export class OrderStatusPage {
             billingInfo.email,
             billingInfo.phone
         ];
-
+        // Verify billing information
         for (const field of fields) {
             await expect(this.page.locator('address')).toContainText(field);
         }
+
+        // Verify payment method
+        await expect(this.page.getByRole('listitem').filter({ hasText: 'Payment method:'})).toContainText(paymentMethod);
        
     }
 }

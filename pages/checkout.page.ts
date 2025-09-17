@@ -1,4 +1,5 @@
 import { expect, Page, Locator} from '@playwright/test';
+import { ProductInfo } from '../fixtures/product.fixture';  
 
 export class CheckoutPage {
     readonly page: Page;
@@ -35,9 +36,10 @@ export class CheckoutPage {
         await this.page.waitForURL(/.*checkout.*/);
     }
 
-    async verifyOrderItem(itemName: string) {
-        //const orderTable = this.page.getByRole('table').filter({ hasText: 'ORDER' });
-        expect(this.page.getByRole('cell', { name: itemName + '  ×' })).toBeVisible();
+    async checkOrderItem(itemName: ProductInfo[]) {
+        for (const product of itemName) {
+            expect(this.page.getByRole('cell', { name: product.name + '  ×' })).toBeVisible();
+        }
     }
 
     async fillBillingInformation(billingInfo: { 
@@ -64,29 +66,10 @@ export class CheckoutPage {
         await this.emailInput.fill(billingInfo.email);
         await this.phoneInput.fill(billingInfo.phone);  
     }
+
+    async selectPaymentMethod(methodName: string) {
+        await this.page.getByRole('radio', { name: methodName }).check();
+    }
 }
 
-
-export class BillingInfo  {
-    readonly firstName: string;
-    readonly lastName: string;
-    readonly city: string;
-    readonly country: string;
-    readonly street: string;
-    readonly state: string;
-    readonly zip: string;
-    readonly email: string;
-    readonly phone: string;
-    constructor() {
-        this.firstName = 'Tung';
-        this.lastName = 'Pham';
-        this.street = '123 Main St';
-        this.city = 'HCM';
-        this.country = 'United States (US)';
-        this.state = 'Alabama';
-        this.zip = '70000';
-        this.email = 'tung.pham@example.com';
-        this.phone = '555-1234';
-    }
-};
 

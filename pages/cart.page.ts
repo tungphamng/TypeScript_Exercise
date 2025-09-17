@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
+import { ProductInfo } from '../fixtures/product.fixture.ts';
 
 export class CartPage {
     readonly page: Page;
@@ -20,9 +21,12 @@ export class CartPage {
         await this.page.goto('/cart');
     }
 
-    async checkOrderItem(itemName: string) {
-        const itemRow = await this.productTable.getByRole('row', { name: new RegExp(itemName, 'i') });
-        await expect(itemRow).toBeVisible();
+    async checkOrderItem(itemName: ProductInfo[]) {
+        for (const product of itemName) {
+            const itemRow = await this.productTable.getByRole('row', { name: new RegExp(product.name, 'i') });
+            await expect(itemRow).toBeVisible();
+        }
+        
     }
 
     async proceedToCheckout() {
