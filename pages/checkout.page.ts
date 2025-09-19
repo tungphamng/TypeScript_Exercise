@@ -69,4 +69,6 @@ export class CheckoutPage {
         await this.selectPaymentMethod(paymentMethod);
         await this.placeOrderButton.click();
     }
+
+    
 }
