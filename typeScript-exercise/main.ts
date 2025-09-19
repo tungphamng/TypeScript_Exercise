@@ -1,4 +1,4 @@
-import PersonRepository from "./PersonRepository.ts";
+import PersonRepository from "./person-repository.js";
 
 let test: PersonRepository = new PersonRepository('data/people.json');
 

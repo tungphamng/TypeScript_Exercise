@@ -1,7 +1,7 @@
 class Person {
     readonly name: string;
-    public age!: number;
-    public city!: string;
+    private age: number;
+    private city: string;
     
 
     constructor(name: string, age: number, city: string) {
@@ -18,7 +18,7 @@ class Person {
     }
 
     public greet(): string {
-        return "Hi, I'm " + this.name + " from " + this.city + ".";
+        return `Hi, I'm ${this.name} from ${this.city}.`;
     }
 
     public celebrateBirthday(): void {

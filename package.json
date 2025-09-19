@@ -1,6 +1,22 @@
 {
-  "type": "module",
+  "name": "typescript_exercise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tungphamng/TypeScript_Exercise.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tungphamng/TypeScript_Exercise/issues"
+  },
+  "homepage": "https://github.com/tungphamng/TypeScript_Exercise#readme",
   "devDependencies": {
-    "@types/node": "^24.3.1"
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.3"
   }
 }
