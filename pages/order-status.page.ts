@@ -1,6 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { BillingInfo } from '../fixtures/billing.fixture.ts';
-import { ProductInfo } from '../fixtures/product.fixture.ts';
+import { ProductInfo, BillingInfo } from '../models/data.model';  
 
 export class OrderStatusPage {
     readonly page: Page;
@@ -12,29 +11,35 @@ export class OrderStatusPage {
     async checkStatus() {
         await this.page.waitForLoadState('domcontentloaded'); 
         await this.page.waitForLoadState('networkidle'); 
+
     }
 
 
-    async verifyOrderDetails(products: ProductInfo[], billingInfo: BillingInfo, paymentMethod: string) {
+    async verifyOrderDetails(products: ProductInfo[], billingInfo: BillingInfo| undefined, paymentMethod: string) {
         // Verify order details
         await this.page.waitForLoadState('domcontentloaded'); 
         await this.page.waitForLoadState('networkidle'); 
+        //await this.page.waitForTimeout(5000);
 
         // Verify products in the order
         const orderTable = this.page.getByRole('table');
         for (const product of products) {
-            await expect(orderTable.getByRole('cell', { name: product.name + '  ×' })).toBeVisible();
+            await expect.soft(orderTable.getByRole('cell', { name: product.name + '  ×' })).toBeVisible();
         }
     
-        const fields = [
-            billingInfo.firstName + ' ' + billingInfo.lastName,
-            billingInfo.street,
-            billingInfo.city,
-            billingInfo.zip,
-            billingInfo.email,
-            billingInfo.phone
+        // Verify billing information if provided
+        if (billingInfo) {
+            const fields = [
+                billingInfo.firstName + ' ' + billingInfo.lastName,
+                billingInfo.street,
+                billingInfo.city,
+                billingInfo.zip,
+                billingInfo.email,
+                billingInfo.phone
         ];
         // Verify billing information
+
+        await this.page.locator('address').waitFor({state: 'visible'});
         for (const field of fields) {
             await expect(this.page.locator('address')).toContainText(field);
         }
@@ -43,4 +48,5 @@ export class OrderStatusPage {
         await expect(this.page.getByRole('listitem').filter({ hasText: 'Payment method:'})).toContainText(paymentMethod);
        
     }
+}
 }

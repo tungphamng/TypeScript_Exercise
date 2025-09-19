@@ -1,5 +1,6 @@
 import { expect, Page, Locator} from '@playwright/test';
-import { ProductInfo } from '../fixtures/product.fixture';  
+import { ProductInfo, BillingInfo } from '../models/data.model';  
+import { PaymentMethod } from '../enum/data.enum';
 
 export class CheckoutPage {
     readonly page: Page;
@@ -33,25 +34,16 @@ export class CheckoutPage {
     }
 
     async isCheckoutPageDisplayed() {
-        await this.page.waitForURL(/.*checkout.*/);
+        await expect(this.page).toHaveURL(/.*checkout.*/);
     }
 
-    async checkOrderItem(itemName: ProductInfo[]) {
+    async ShouldOrderItemsDisplay(itemName: ProductInfo[]) {
         for (const product of itemName) {
-            expect(this.page.getByRole('cell', { name: product.name + '  ×' })).toBeVisible();
+            await expect.soft(this.page.getByRole('cell', { name: product.name + '  ×' })).toBeVisible();
         }
     }
 
-    async fillBillingInformation(billingInfo: { 
-            firstName: string;
-            lastName: string; 
-            street: string; 
-            city: string; 
-            country: string; 
-            state: string; 
-            zip: string; 
-            email: string; 
-            phone: string }) {
+    async fillBillingInformation(billingInfo: BillingInfo) {
         await this.firstNameInput.clear();
         await this.firstNameInput.fill(billingInfo.firstName);
         await this.lastNameInput.clear();
@@ -67,9 +59,14 @@ export class CheckoutPage {
         await this.phoneInput.fill(billingInfo.phone);  
     }
 
-    async selectPaymentMethod(methodName: string) {
+    async selectPaymentMethod(methodName: PaymentMethod) {
         await this.page.getByRole('radio', { name: methodName }).check();
     }
+
+    async orderProduct(billingInfo: BillingInfo, paymentMethod: PaymentMethod) {
+        await this.goto();
+        await this.fillBillingInformation(billingInfo);
+        await this.selectPaymentMethod(paymentMethod);
+        await this.placeOrderButton.click();
+    }
 }
-
-

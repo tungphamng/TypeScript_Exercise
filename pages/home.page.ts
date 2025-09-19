@@ -1,6 +1,5 @@
-import { Page, Locator } from '@playwright/test';
-import { ProductInfo } from '../fixtures/product.fixture.ts';
-import { asyncWrapProviders } from 'async_hooks';
+import { Page, Locator, expect } from '@playwright/test';
+import { ProductInfo } from '../models/data.model';
 
 
 export class HomePage {
@@ -43,7 +42,7 @@ export class HomePage {
     async verifyProductInCart(itemName: ProductInfo[]) {
         await this.openQuickViewCart();
         for(const product of itemName) {
-            await this.page.locator('#header').getByRole('link', { name: product.name }).isVisible();
+            await expect.soft(this.page.locator('#header').getByRole('link', { name: product.name })).toBeVisible();
         }
     }
 

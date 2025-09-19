@@ -5,9 +5,8 @@ import { ProductCategoryPage } from '../pages/product-category.page';
 import { CartPage } from '../pages/cart.page';
 import { CheckoutPage } from '../pages/checkout.page';
 import { OrderStatusPage } from '../pages/order-status.page';
-import { UserInfo } from '../pages/login.page';
-import { billingInfo } from '../fixtures/billing.fixture.ts';
-import { products } from '../fixtures/product.fixture.ts';
+import { userInfo,billingInfo,products } from '../data/test-data.ts';
+import { PaymentMethod } from '../enum/data.enum.ts';
 
 
 test('TC_02 Verify users can buy multiple item successfully', async ({ page }) => {
@@ -16,7 +15,7 @@ test('TC_02 Verify users can buy multiple item successfully', async ({ page }) =
   await homepage.goto();
 
   // 2. Login with valid credentials 
-  await new LoginPage(page).login(UserInfo.user, UserInfo.pass);
+  await new LoginPage(page).login(userInfo.username, userInfo.password);
 
   // 3. Go to Shop page
   await homepage.gotoMenu('Shop');
@@ -34,13 +33,13 @@ test('TC_02 Verify users can buy multiple item successfully', async ({ page }) =
 
   const checkoutPage = new CheckoutPage(page);
  
-  await checkoutPage.checkOrderItem(products);
+  await checkoutPage.ShouldOrderItemsDisplay(products);
   
   await checkoutPage.fillBillingInformation(billingInfo);
   await checkoutPage.placeOrderButton.click();
   
   // 7. Verify order confirmation message
-  await new OrderStatusPage(page).verifyOrderDetails(products, billingInfo, "Direct bank transfer");
+  await new OrderStatusPage(page).verifyOrderDetails(products, billingInfo, PaymentMethod.DirectBankTransfer);
 
 });
 
