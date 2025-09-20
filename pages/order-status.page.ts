@@ -42,18 +42,19 @@ export class OrderStatusPage {
                 billingInfo.zip,
                 billingInfo.email,
                 billingInfo.phone
-        ];
-        // Verify billing information
+            ];
+            // Verify billing information
 
-        await this.page.locator('address').waitFor({state: 'visible'});
-        for (const field of fields) {
-            await expect(this.page.locator('address')).toContainText(field);
+            await this.page.locator('address').waitFor({state: 'visible'});
+            for (const field of fields) {
+                await expect(this.page.locator('address')).toContainText(field);
+            }
+
+            // Verify payment method
+            await expect(this.page.getByRole('listitem').filter({ hasText: 'Payment method:'})).toContainText(paymentMethod);
+        
         }
-
-        // Verify payment method
-        await expect(this.page.getByRole('listitem').filter({ hasText: 'Payment method:'})).toContainText(paymentMethod);
-       
-    }}
+    }
 
 
     async getOrderDetails() {

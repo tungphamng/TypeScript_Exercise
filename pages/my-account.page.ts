@@ -16,6 +16,7 @@ export class MyAccountPage {
     }
 
     async verifyOrderHistory(orderInfoList: OrderInfo[]) {
+        await this.ordersLink.click();
         for (const orderInfo of orderInfoList) {
             // Verify each order's details in the order history
             const orderRow = this.page.getByRole('row', { name: new RegExp(orderInfo.orderID) });

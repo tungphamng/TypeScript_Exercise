@@ -30,7 +30,7 @@ export class CheckoutPage {
     }
 
     async goto() {
-        await this.page.goto('/checkout');
+        await this.page.goto('/checkout/');
     }
 
     async isCheckoutPageDisplayed() {
@@ -70,5 +70,24 @@ export class CheckoutPage {
         await this.placeOrderButton.click();
     }
 
-    
+    async verifyErrorMessagesForMandatoryFields() {
+        // Verify error messages for each mandatory field
+        const errorMessages = [
+            {field: this.firstNameInput, message: 'Billing First name is a required field.'},
+            {field: this.lastNameInput, message: 'Billing Last name is a required field.'},
+            {field: this.streetInput, message: 'Billing Street address is a required field.'},
+            {field: this.citySelect, message: 'Billing Town / City is a required field.'},
+            {field: this.zipInput, message: 'Billing ZIP Code is a required field.'},
+            {field: this.phoneInput, message: 'Billing Phone is a required field.'},
+            {field: this.emailInput, message: 'Billing Email address is a required field.'},
+            
+        ];
+
+        const errorMessagesLocator = this.page.locator('.woocommerce-error');
+
+        for (const {field, message} of errorMessages) {
+            await expect(field).toHaveCSS('border-color', 'rgb(198, 40, 40)'); 
+            await expect(errorMessagesLocator).toContainText(message);
+        }
+    }
 }

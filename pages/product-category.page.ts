@@ -39,7 +39,9 @@ export class ProductCategoryPage {
                 .nth(1)
                 .click();
             // Wait for the loading message to disappear
-            await this.page.getByText('...').waitFor({ state: 'detached' });
+            //await this.page.getByText('...').waitFor({ state: 'detached' });
+            await this.page.getByRole('link', { name: 'Add “' + product.name + '” to your cart' })
+                .nth(1).waitFor({ state: 'visible' });
         }
     }
 
