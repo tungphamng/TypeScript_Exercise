@@ -39,6 +39,11 @@ export class HomePage {
         await this.cartLink.click();
     }
 
+    async gotoCheckoutPage() {
+        await this.openQuickViewCart();
+        await this.page.getByRole('link', { name: 'Checkout' }).click();
+    }
+
     async verifyProductInCart(itemName: ProductInfo[]) {
         await this.openQuickViewCart();
         for(const product of itemName) {
