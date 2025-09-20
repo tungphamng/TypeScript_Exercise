@@ -42,3 +42,17 @@ export class ProductInfo {
         this.price = price;
     } 
 }
+
+export class OrderInfo {
+    readonly numOfProducts: number;
+    readonly totalPrice: string;
+    readonly orderDate: string;
+    readonly orderID: string;
+
+    constructor( orderID: string,  orderDate: string, numOfProducts: number, totalPrice: string) {
+        this.numOfProducts = numOfProducts;
+        this.totalPrice = totalPrice;       
+        this.orderDate = orderDate;
+        this.orderID = orderID;
+    }
+}
