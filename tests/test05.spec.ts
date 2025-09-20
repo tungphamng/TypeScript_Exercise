@@ -15,35 +15,28 @@ test('TC_05 Verify orders appear in order history', async ({ page }) => {
     const productTemp = [products[0],products[2]];
     const homepage = new HomePage(page);
     await homepage.goto();
-    
-    // 2. Login with valid credentials 
-    await new LoginPage(page).login(userInfo.username, userInfo.password);
-    for(let i=1; i<2; i++){
 
-        // 3. Go to Shop page
+    //Login with valid credentials
+    await new LoginPage(page).login(userInfo.username, userInfo.password);
+
+    for(let i=0; i<2; i++){
+
+        // Go to Shop page
         await homepage.gotoMenu('Shop');
         
-        // 4. Select multiple items and add to cart
+        // Select multiple items and add to cart
         await new ProductCategoryPage(page).addToCart(productTemp);
 
         await new CheckoutPage(page).orderProduct(billingInfo, PaymentMethod.DirectBankTransfer);
         orderInfoList.push(await new OrderStatusPage(page).getOrderDetails());
 
     }
-
     // 1. Go to My Account page
     const myAccountPage = new MyAccountPage(page);
     await myAccountPage.goto();
-    await myAccountPage.ordersLink.click();
-    await myAccountPage.verifyOrderHistory(orderInfoList);
 
-
-
-
-    
-    
-    
     // 2. Click on Orders in left navigation
     // 3. Verify order details
+    await myAccountPage.verifyOrderHistory(orderInfoList);
 
 });
