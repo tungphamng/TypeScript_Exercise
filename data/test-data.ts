@@ -26,8 +26,7 @@ export const products: ProductInfo[] = [
 ];   
 
 
-const uniqueNumber = Date.now(); 
 export const reviewInfo: ReviewInfo = new ReviewInfo(
-    'good product' + String(uniqueNumber),
+    `good product ${String(Date.now())}`,
     5
 );
