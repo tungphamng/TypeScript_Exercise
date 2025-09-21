@@ -11,23 +11,27 @@ import { OrderInfo } from '../models/data.model.ts';
 
 
 test('TC_05 Verify orders appear in order history', async ({ page }) => {
-    var orderInfoList: OrderInfo[] = [];
+    let orderInfoList: OrderInfo[] = [];
     const productTemp = [products[0],products[2]];
     const homepage = new HomePage(page);
     await homepage.goto();
 
     //Login with valid credentials
-    await new LoginPage(page).login(userInfo.username, userInfo.password);
+    const loginPage = new LoginPage(page);
+    await loginPage.login(userInfo.username, userInfo.password);
 
-    for(let i=0; i<2; i++){
+    for (let i = 0; i < 2; i++) {
 
         // Go to Shop page
         await homepage.gotoMenu('Shop');
         
         // Select multiple items and add to cart
-        await new ProductCategoryPage(page).addToCart(productTemp);
+        const productCategory = new ProductCategoryPage(page);
+        await productCategory.addToCart(productTemp);
 
-        await new CheckoutPage(page).orderProduct(billingInfo, PaymentMethod.DirectBankTransfer);
+        // Go to shopping cart page
+        const checkoutPage = new CheckoutPage(page);
+        await checkoutPage.orderProduct(billingInfo, PaymentMethod.DirectBankTransfer);
         orderInfoList.push(await new OrderStatusPage(page).getOrderDetails());
 
     }

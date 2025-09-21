@@ -47,7 +47,7 @@ export class OrderStatusPage {
 
             await this.page.locator('address').waitFor({state: 'visible'});
             for (const field of fields) {
-                await expect(this.page.locator('address')).toContainText(field);
+                await expect.soft(this.page.locator('address')).toContainText(field);
             }
 
             // Verify payment method

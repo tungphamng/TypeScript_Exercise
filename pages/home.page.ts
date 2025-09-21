@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { ProductInfo } from '../models/data.model';
+import { WaitUtil } from '../utils/wait-util';
 
 
 export class HomePage {
@@ -61,8 +62,12 @@ export class HomePage {
         await this.page.waitForLoadState('networkidle');
 
         const productInCart = this.page.locator('.cart-widget-products > li').filter({ hasText: itemName.name }).nth(0);
-        const removeButton = productInCart.locator('.remove');
-        await removeButton.click();
-        await expect(productInCart).toHaveCount(0);
+        const count = await productInCart.count();
+        console.log('Count of product in cart: ' + count);
+        if (count > 0) {
+            const removeButton = productInCart.locator('.remove');
+            await removeButton.click();
+        }
+        await WaitUtil.waitForLocatorNotExist(productInCart);
    }
 }

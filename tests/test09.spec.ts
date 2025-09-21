@@ -17,7 +17,8 @@ test('TC_09 Verify users can update quantity of product in cart', async ({ page 
     await homepage.goto();
     
     // 2. Login with valid credentials 
-    await new LoginPage(page).login(userInfo.username, userInfo.password);
+    const loginPage = new LoginPage(page);
+    await loginPage.login(userInfo.username, userInfo.password);
 
     //Remove product in cart if any
     await homepage.removedProductInCart(productTemp[0]);
@@ -26,42 +27,39 @@ test('TC_09 Verify users can update quantity of product in cart', async ({ page 
     await homepage.gotoMenu('Shop');
    
     // 4. Add a product
-    await new ProductCategoryPage(page).addToCart(productTemp);
+    const productCategory = new ProductCategoryPage(page);
+    await productCategory.addToCart(productTemp);
 
     //Handle to get current price of the product
-    const currentPrice = await new ProductCategoryPage(page).getCurrentProductPrice(productTemp[0]);
-    console.log('Current price: ' + currentPrice);
-    if (currentPrice != null) {
-        productTemp[0].setPrice(currentPrice);
-    }
-   
+    const productTempNew = [await productCategory.setCurrentProductPrice(productTemp[0])];
+    
     // 5. Go to the cart
     const cartPage = new CartPage(page);
     await cartPage.goto();
 
     // 6. Verify quantity of added product
-    await cartPage.checkOrderItem(productTemp);
-    await cartPage.checkQuantity(products[0], 1);
+    await cartPage.checkOrderItem(productTempNew);
+    await cartPage.checkQuantity(productTempNew[0], 1);
 
     // 7. Click on Plus(+) button
-    await cartPage.adjustQuantity(products[0], AdjustQuantityType.Plus, 1);    
+    await cartPage.adjustQuantity(productTempNew[0], AdjustQuantityType.Plus, 1);
 
     // 8. Verify quantity of product and SUB TOTAL price
-    await cartPage.checkQuantity(products[0], 2);
-    await cartPage.checkSubTotal(products[0], products[0].price, 2);
+    await cartPage.checkQuantity(productTempNew[0], 2);
+    await cartPage.checkSubTotal(productTempNew[0], productTempNew[0].price, 2);
 
     // 9. Enter 4 into quantity textbox then click on UPDATE CART button
-    await cartPage.setQuantityInput(products[0], 4);
+    await cartPage.setQuantityInput(productTempNew[0], 4);
 
     // 10. Verify quantity of product is 4 and SUB TOTAL price
-    await cartPage.checkQuantity(products[0], 4);
-    await cartPage.checkSubTotal(products[0], products[0].price, 4);
+    await cartPage.checkQuantity(productTempNew[0], 4);
+    await cartPage.checkSubTotal(productTempNew[0], productTempNew[0].price, 4);
 
     // 11. Click on Minus(-) button
-    await cartPage.adjustQuantity(products[0], AdjustQuantityType.Minus, 1);
+    await cartPage.adjustQuantity(productTempNew[0], AdjustQuantityType.Minus, 1);
 
     // 12. Verify quantity of product and SUB TOTAL price
-    await cartPage.checkQuantity(products[0], 3);
-    await cartPage.checkSubTotal(products[0], products[0].price, 3);
+    await cartPage.checkQuantity(productTempNew[0], 3);
+    await cartPage.checkSubTotal(productTempNew[0], productTempNew[0].price, 3);
 
 });

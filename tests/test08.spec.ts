@@ -15,14 +15,16 @@ test('TC_08 Verify users can clear the cart', async ({ page }) => {
     await homepage.goto();
     
     // 2. Login with valid credentials 
-    await new LoginPage(page).login(userInfo.username, userInfo.password);
-    
+    const loginPage = new LoginPage(page);
+    await loginPage.login(userInfo.username, userInfo.password);
+
     // 3. Go to Shop page
     await homepage.gotoMenu('Shop');
     
     // 4. Select multiple items and add to cart
-    await new ProductCategoryPage(page).addToCart(products);
-      
+    const productCategory = new ProductCategoryPage(page);
+    await productCategory.addToCart(products);
+
     // 3. Go to shopping cart page
     await homepage.gotoCartPage();
 

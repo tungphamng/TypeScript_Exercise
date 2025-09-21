@@ -12,7 +12,8 @@ test('TC_04 Verify users can sort items by price', async ({ page }) => {
     await homepage.goto();
     
     // 2. Login with valid credentials 
-    await new LoginPage(page).login(userInfo.username, userInfo.password);
+    const loginPage = new LoginPage(page);
+    await loginPage.login(userInfo.username, userInfo.password);
 
     // 3. Go to Shop page
     await homepage.gotoMenu('Shop');

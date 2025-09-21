@@ -13,8 +13,9 @@ test('TC_10 Verify users can post a review', async ({ page }) => {
     await homepage.goto();
     
     // 2. Login with valid credentials 
-    await new LoginPage(page).login(userInfo.username, userInfo.password);
-    
+    const loginPage = new LoginPage(page);
+    await loginPage.login(userInfo.username, userInfo.password);
+
     // 3. Go to Shop page
     await homepage.gotoMenu('Shop');
 

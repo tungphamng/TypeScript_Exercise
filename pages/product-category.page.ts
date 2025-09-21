@@ -35,12 +35,12 @@ export class ProductCategoryPage {
     async addToCart(itemName: ProductInfo[]) {
         for (const product of itemName) {
             // Implementation for adding an item to the cart
-            await this.page.getByRole('link', { name: 'Add “' + product.name + '” to your cart' })
+            await this.page.getByRole('link', { name: `Add “${product.name}” to your cart` })
                 .nth(1)
                 .click();
             // Wait for the loading message to disappear
             //await this.page.getByText('...').waitFor({ state: 'detached' });
-            await this.page.getByRole('link', { name: 'Add “' + product.name + '” to your cart' })
+            await this.page.getByRole('link', { name: `Add “${product.name}” to your cart` })
                 .nth(1).waitFor({ state: 'visible' });
         }
     }
@@ -96,7 +96,7 @@ export class ProductCategoryPage {
         await this.page.locator('.product-title').getByRole('link', { name: productName }).click();
     }
 
-    async getCurrentProductPrice(productName: ProductInfo): Promise<number | null> {
+    async setCurrentProductPrice(productName: ProductInfo): Promise<ProductInfo> {
         let priceValue: string | null;
         const contentProduct = this.page.locator('.content-product').filter({ hasText: productName.name });
         const insLocator = contentProduct.locator('ins .woocommerce-Price-amount.amount > bdi');
@@ -107,8 +107,12 @@ export class ProductCategoryPage {
             priceValue = await contentProduct.locator('.woocommerce-Price-amount.amount > bdi').textContent();
            
         }
+        if (priceValue) {
+            productName.setPrice(Number(priceValue.replace("$","").replace(",","")));
+        }
+        return productName;
+        
 
-        return priceValue ? Number(priceValue.replace("$","").replace(",","")) : null;
     }
 
 }

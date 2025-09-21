@@ -2,6 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { ProductInfo } from '../models/data.model';
 import { AdjustQuantityType } from '../enum/data.enum';
+import { WaitUtil } from '../utils/wait-util';
 
 export class CartPage {
     readonly page: Page;
@@ -41,7 +42,6 @@ export class CartPage {
         await this.clearCartButton.click();
 
         this.page.once('dialog', async (dialog) => {
-            console.log(dialog.message());  // In ra: "Are you sure?"
             await dialog.accept();          //  click OK
         });
         await this.page.waitForLoadState('domcontentloaded');
@@ -80,7 +80,7 @@ export class CartPage {
         
         //Wait for the loading icon disappear
         if (oldValue != null) {
-            await expect(subTotal).not.toHaveText(oldValue,{ timeout: 10000 });
+            await WaitUtil.waitForLocatorTextChange(subTotal, oldValue);
         }
 
     }
@@ -95,7 +95,7 @@ export class CartPage {
             await quantityInput.click();
             //Wait for the loading icon disappear
             if (oldValue != null) {
-                await expect(subTotal).not.toHaveText(oldValue,{ timeout: 10000 });
+                await WaitUtil.waitForLocatorTextChange(subTotal, oldValue);
             }
         } 
     }
@@ -109,12 +109,11 @@ export class CartPage {
             const removeButton = itemRow.getByRole('link', { name: 'Remove' });
             await removeButton.click();
             
-            //Wait for the loading icon disappear
             if (oldValue != null) {
-                await expect(subTotal).not.toHaveText(oldValue,{ timeout: 10000 });
+                await WaitUtil.waitForLocatorTextChange(subTotal, oldValue);
             }
+            
         }
     }
-
  
 }
