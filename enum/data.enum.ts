@@ -9,3 +9,16 @@ export enum PaymentMethod{
      DirectBankTransfer= 'Direct bank transfer',
 }
 
+export enum RateStar{
+     OneStar = 1,
+     TwoStar = 2,
+     ThreeStar = 3,
+     FourStar = 4,
+     FiveStar = 5
+}
+
+
+export enum AdjustQuantityType{
+     Plus = 'plus',
+     Minus = 'minus',
+}    

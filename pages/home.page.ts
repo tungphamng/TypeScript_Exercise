@@ -54,4 +54,15 @@ export class HomePage {
     async clickCheckoutFromCart() {
         await this.page.getByRole('link', { name: 'Checkout' }).click();
     }
+
+    async removedProductInCart(itemName: ProductInfo) {
+        await this.openQuickViewCart();
+        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForLoadState('networkidle');
+
+        const productInCart = this.page.locator('.cart-widget-products > li').filter({ hasText: itemName.name }).nth(0);
+        const removeButton = productInCart.locator('.remove');
+        await removeButton.click();
+        await expect(productInCart).toHaveCount(0);
+   }
 }

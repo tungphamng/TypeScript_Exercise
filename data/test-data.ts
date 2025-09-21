@@ -1,4 +1,4 @@
-import { BillingInfo, UserInfo, ProductInfo } from "../models/data.model.ts";
+import { BillingInfo, UserInfo, ProductInfo, ReviewInfo } from "../models/data.model.ts";
 
 export const billingInfo = new BillingInfo(
     'Tung',
@@ -24,3 +24,10 @@ export const products: ProductInfo[] = [
     new ProductInfo('Beats Solo3 Wireless On-Ear', 300),
     new ProductInfo('Canon i-SENSYS LBP6030W with Wi-Fi', 250)
 ];   
+
+
+const uniqueNumber = Date.now(); 
+export const reviewInfo: ReviewInfo = new ReviewInfo(
+    'good product' + String(uniqueNumber),
+    5
+);

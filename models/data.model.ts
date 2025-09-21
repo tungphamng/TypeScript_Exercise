@@ -36,11 +36,15 @@ export class BillingInfo  {
 
 export class ProductInfo {
     readonly name: string;
-    readonly price: number;
+    public price: number;
     constructor(name: string,price: number) {
         this.name = name;
         this.price = price;
     } 
+
+    public setPrice(price: number) {
+        this.price = price;
+    }
 }
 
 export class OrderInfo {
@@ -54,5 +58,15 @@ export class OrderInfo {
         this.totalPrice = totalPrice;       
         this.orderDate = orderDate;
         this.orderID = orderID;
+    }
+}
+
+export class ReviewInfo {
+    readonly reviewText: string;
+    readonly rating: number;
+
+    constructor(reviewText: string, rating: number) {
+        this.reviewText = reviewText;
+        this.rating = rating;
     }
 }

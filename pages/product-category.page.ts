@@ -92,5 +92,23 @@ export class ProductCategoryPage {
         
     }
 
-}
+    async clickProductByName(productName: string) {
+        await this.page.locator('.product-title').getByRole('link', { name: productName }).click();
+    }
 
+    async getCurrentProductPrice(productName: ProductInfo): Promise<number | null> {
+        let priceValue: string | null;
+        const contentProduct = this.page.locator('.content-product').filter({ hasText: productName.name });
+        const insLocator = contentProduct.locator('ins .woocommerce-Price-amount.amount > bdi');
+        const count = await insLocator.count();
+        if (count > 0) {
+            priceValue = await insLocator.first().textContent();      
+        } else {
+            priceValue = await contentProduct.locator('.woocommerce-Price-amount.amount > bdi').textContent();
+           
+        }
+
+        return priceValue ? Number(priceValue.replace("$","").replace(",","")) : null;
+    }
+
+}
